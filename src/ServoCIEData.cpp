@@ -4,6 +4,10 @@ ServoCIEData::ServoCIEData() : RunMode(Awaiting_Info), ByteCount(0), MetricNo(0)
     // Initialize other members if needed
 }
 
+void ServoCIEData::begin() {
+    CIE_setup();
+}
+
 void ServoCIEData::parseCIEData(char NextSCI_chr) {
     switch (RunMode) {
         case Awaiting_Info:

@@ -6,6 +6,7 @@
 class ServoCIEData {
 public:
     ServoCIEData();
+    void begin();
     void parseCIEData(char NextSCI_chr);
     void getCIEResponse();
     void CIE_setup();

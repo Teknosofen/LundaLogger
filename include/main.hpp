@@ -8,7 +8,7 @@
 //
 // main.hpp for the Lundalogger
 //
-// Åke L 2025-03
+// ï¿½ke L 2025-03
 //
 // -----------------------------------------------
 
@@ -17,8 +17,11 @@
 #define hostCom Serial
 #define servoCom Serial2
 
-#include "ServoCIEData.hpp"
+#define SDCARD_CS_PIN 5
 
+#define SET_LOOP_TIME 1000;                             // slow loop update in [ms]
+
+#include "ServoCIEData.hpp"
 
 
 

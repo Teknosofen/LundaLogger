@@ -5,18 +5,59 @@
 #include <WebServer.h>
 #include <WebSocketsServer.h>
 #include "DataLogger.hpp"
-#include "MyWiFiHandler.hpp"
+#include "MyWiFiManager.hpp"
 #include "FileServer.hpp"
+#include "ServoCIEData.hpp"
+#include "rm67162.h"
+#include "AnalogClock.hpp"
+#include "DisplayManager.hpp"
+
 
 MyWiFiHandler wifiHandler("your_ssid", "your_password");
-FileServer fileServer(5, wifiHandler);  // SD card CS pin
-DataLogger dataLogger(5, fileServer);  // SD card CS pin
+FileServer fileServer(SDCARD_CS_PIN, wifiHandler);                      // SD card CS pin
+DataLogger dataLogger(SDCARD_CS_PIN, fileServer);                       // SD card CS pin
+ServoCIEData servoCIEData();                                // handler for data fron SERVO ventilator
+
+
+// Graphix CFG
+// #define WIDTH  536
+// #define HEIGHT 240
+
+TFT_eSPI tft = TFT_eSPI();
+TFT_eSprite sprite = TFT_eSprite(&tft);
+
+// Analog Clock
+AnalogClock myClock(&sprite, CLOCK_XPOS, CLOCK_YPOS, CLOCK_SIZE);
+
+// Display management
+DisplayManager displayManager(&tft, &sprite, &myClock);
+
 
 void setup() {
-    Serial.begin(115200);
+    hostCom.begin(115200);
+    servoCom.begin(38400, SERIAL_8E1, 36, 4); 
+    servoCIEData.begin():                       // initiates the CIE config
     wifiHandler.begin();
     dataLogger.begin();
     fileServer.begin();
+
+    // Display update
+    rm67162_init();
+    lcd_setRotation(1);
+    sprite.setTextColor(TFT_WHITE, TFT_BLACK);
+    sprite.createSprite(LCD_WIDTH, LCD_HEIGHT);
+    sprite.drawString(lundaLoggerVerLbl, 5, 100, 4);
+    lcd_PushColors(0, 0, LCD_WIDTH, LCD_HEIGHT, (uint16_t *)sprite.getPointer());
+    delay(3000);
+
+    displayManager.begin();
+    displayManager.renderHeader();
+
+    // Initialize the clock
+    myClock.begin();
+    // myClock.setRTCTime(); // Set the RTC time with the compile time clock.setRTCTime
+    lcd_PushColors(0, 0, LCD_WIDTH, LCD_HEIGHT, (uint16_t *)sprite.getPointer());
+
 }
 
 void loop() {
@@ -33,42 +74,18 @@ void loop() {
 
     fileServer.handleClient();
     delay(1000);
+
+
+    static int lastLoopTime = 0;
+
+    if (millis() - lastLoopTime > SET_LOOP_TIME) {
+      lastLoopTime = millis();
+
+
+
+      
+    }
+
+
+
 }
-
-/*
-
-
-
-
-
-
-#include <SPI.h>
-#include <SD.h>
-#include <WiFi.h>
-#include <WebServer.h>
-
-DataLogger dataLogger(5);  // SD card CS pin
-FileServer fileServer(5, "your_ssid", "your_password");
-
-void setup() {
-    Serial.begin(115200);
-    dataLogger.begin();
-    fileServer.begin();
-}
-
-void loop() {
-    // Simulate data logging
-    dataLogger.logWaveformData("waveform data");
-    dataLogger.logBreathData("breath data");
-    dataLogger.logSettingsData("settings data");
-
-    fileServer.handleClient();
-    delay(1000);
-}
-
-*/
-
-/* can you please recapitulate the lunlogger project and also separate the wifi related methods into to a separate class for me and allow the other classes to use that class? */
-/* excellent, can you also add a new /data html page that presents data from the three data sets that are being logged. Note that I want the HTML page to be updated as new data arrives. */
-
-/* the usage example seems to be missing some details, can you please update it for me? */
