@@ -1,8 +1,8 @@
 #include "FileServer.hpp"
 
 // Constructor to initialize
-FileServer::FileServer(int csPin, MyWiFiHandler *wifiHdl)
-    : csPin(csPin), server(80), webSocket(81), wifiHdl(wifiHdl)  {}
+FileServer::FileServer(int csPin /*, MyWiFiHandler *wifiHdl*/)
+    : csPin(csPin)/*, wifiHdl(wifiHdl)*/, server(80), webSocket(81)  {}
 
 void FileServer::begin() {
    
@@ -18,6 +18,8 @@ void FileServer::begin() {
 
     server.begin();
     webSocket.begin();
+    // Set up WebSocket event handler to process incoming messages
+    // Expected messages: text messages containing data updates
     webSocket.onEvent([this](uint8_t num, WStype_t type, uint8_t *payload, size_t length) {
         handleWebSocketMessage(num, type, payload, length);
     });
@@ -26,31 +28,31 @@ void FileServer::begin() {
 void FileServer::handleClient() {
     server.handleClient();
     webSocket.loop();
-}
-
 void FileServer::sendDataUpdate(const String &waveformData, const String &breathData, const String &settingsData) {
     this->waveformData = waveformData;
     this->breathData = breathData;
     this->settingsData = settingsData;
-    String message = "waveform:" + waveformData + ",breath:" + breathData + ",settings:" + settingsData;
+    char message[256];
+    snprintf(message, sizeof(message), "waveform:%s,breath:%s,settings:%s", waveformData.c_str(), breathData.c_str(), settingsData.c_str());
     webSocket.broadcastTXT(message);
 }
-
 void FileServer::handleRoot() {
     String html = "<html><body><h1>Select a File to Download</h1><ul>";
     File root = SD.open("/");
-    while (true) {
-        File entry = root.openNextFile();
-        if (!entry) {
-            break;
+    if (!root) {
+    if (root) {
+        File entry;
+        while (entry = root.openNextFile()) {
+            if (!entry.isDirectory()) {
+                html += "<li><a href=\"/download?file=" + String(entry.name()) + "\">" + String(entry.name()) + "</a></li>";
+            }
+            entry.close();
         }
-        if (!entry.isDirectory()) {
-            html += "<li><a href=\"/download?file=" + String(entry.name()) + "\">" + String(entry.name()) + "</a></li>";
-        }
-        entry.close();
+        root.close();
     }
     html += "</ul></body></html>";
     server.send(200, "text/html", html);
+}
 }
 
 void FileServer::handleDownload() {
@@ -58,7 +60,11 @@ void FileServer::handleDownload() {
         String filename = server.arg("file");
         File file = SD.open(filename);
         if (file) {
-            server.streamFile(file, "application/octet-stream");
+        String filename = server.arg("file");
+        if (filename.indexOf("..") != -1 || filename.indexOf("/") == 0 || filename.indexOf("\\") == 0) {
+            server.send(400, "text/plain", "Invalid filename");
+            return;
+        }
             file.close();
         } else {
             server.send(404, "text/plain", "File not found");
@@ -93,4 +99,7 @@ void FileServer::handleData() {
 
 void FileServer::handleWebSocketMessage(uint8_t num, WStype_t type, uint8_t *payload, size_t length) {
     // Handle WebSocket messages if needed
+    // Expected messages: text messages containing data updates
+    // Example: "waveform:123,breath:456,settings:789"
+    // You can parse the payload and update the corresponding data fields
 }

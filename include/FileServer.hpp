@@ -12,7 +12,7 @@
 
 class FileServer {
 public:
-    FileServer(int csPin, MyWiFiHandler *wifiHdl);
+    FileServer(int csPin/*, MyWiFiHandler *wifiHdl*/);
     // FileServer(int csPin);
     void begin();
     void handleClient();
@@ -22,7 +22,7 @@ private:
     int csPin;
     WebServer server;
     WebSocketsServer webSocket;
-    MyWiFiHandler *wifiHdl;
+    // MyWiFiHandler *wifiHdl;
     
     String waveformData;
     String breathData;

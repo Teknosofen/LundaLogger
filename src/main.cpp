@@ -15,7 +15,7 @@ AnalogClock myClock(&sprite, CLOCK_XPOS, CLOCK_YPOS, CLOCK_SIZE);
 DisplayManager displayManager(&tft, &sprite, &myClock);
 
 MyWiFiHandler wifiHandler("your_ssid", "your_password");
-FileServer fileServer(SDCARD_CS_PIN, &wifiHandler);                      // SD card CS pin
+FileServer fileServer(SDCARD_CS_PIN /*, &wifiHandler*/);                      // SD card CS pin
 DataLogger dataLogger(SDCARD_CS_PIN, &fileServer);                       // SD card CS pin
 ServoCIEData servoCIEData;                                              // handler for data from SERVO ventilator
 
@@ -23,9 +23,11 @@ void setup() {
     hostCom.begin(115200);
     servoCom.begin(38400, SERIAL_8E1, 36, 4); 
     servoCIEData.begin();                       // initiates the CIE config
+    // wifiHandler.begin();
     wifiHandler.begin();
     dataLogger.begin();
     fileServer.begin();
+    // fileServer.begin();
 
     // Display update
     rm67162_init();
