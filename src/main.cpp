@@ -1,23 +1,5 @@
 #include <Arduino.h>
 #include "main.hpp"
-// #include <SPI.h>
-// #include <SD.h>
-// #include <WiFi.h>
-// #include <WebServer.h>
-// #include <WebSocketsServer.h>
-// #include "DataLogger.hpp"
-// #include "MyWiFiManager.hpp"
-// #include "FileServer.hpp"
-// #include "ServoCIEData.hpp"
-// #include "rm67162.h"
-// #include "AnalogClock.hpp"
-// #include "DisplayManager.hpp"
-
-
-MyWiFiHandler wifiHandler("your_ssid", "your_password");
-FileServer fileServer(SDCARD_CS_PIN, wifiHandler);                      // SD card CS pin
-DataLogger dataLogger(SDCARD_CS_PIN, fileServer);                       // SD card CS pin
-ServoCIEData servoCIEData;                                              // handler for data from SERVO ventilator
 
 // Graphix CFG
 // #define WIDTH  536
@@ -32,6 +14,10 @@ AnalogClock myClock(&sprite, CLOCK_XPOS, CLOCK_YPOS, CLOCK_SIZE);
 // Display management
 DisplayManager displayManager(&tft, &sprite, &myClock);
 
+MyWiFiHandler wifiHandler("your_ssid", "your_password");
+FileServer fileServer(SDCARD_CS_PIN, &wifiHandler);                      // SD card CS pin
+DataLogger dataLogger(SDCARD_CS_PIN, &fileServer);                       // SD card CS pin
+ServoCIEData servoCIEData;                                              // handler for data from SERVO ventilator
 
 void setup() {
     hostCom.begin(115200);

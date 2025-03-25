@@ -4,10 +4,12 @@
 #include <SD.h>
 #include <SPI.h>
 #include <time.h>
+#include "main.hpp"
+#include "FileServer.hpp"
 
 class DataLogger {
 public:
-    DataLogger(int csPin, FileServer &fileServer);
+    DataLogger(int csPin, FileServer *fileSrv);
     void begin();
     void logWaveformData(const String &data);
     void logBreathData(const String &data);
@@ -20,7 +22,7 @@ private:
     File waveformFile;
     File breathFile;
     File settingsFile;
-    FileServer &fileServer;
+    FileServer *fileSrv;
 
     void updateFileNames();
     void logData(File &file, const String &dataType, const String &data);

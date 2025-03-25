@@ -1,4 +1,4 @@
-#include "MyWiFiManager.hpp"
+#include "MyWiFiHandler.hpp"
 
 MyWiFiHandler::MyWiFiHandler(const char *ssid, const char *password)
     : ssid(ssid), password(password) {}

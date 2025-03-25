@@ -1,7 +1,7 @@
 #include "DataLogger.hpp"
 
-DataLogger::DataLogger(int csPin, FileServer &fileServer)
-    : csPin(csPin), fileIndex(0), fileServer(fileServer) {}
+DataLogger::DataLogger(int csPin, FileServer *fileServer)
+    : csPin(csPin), fileServer(fileServer),  fileIndex(0) {}
 
 void DataLogger::begin() {
     if (!SD.begin(csPin)) {
@@ -14,17 +14,17 @@ void DataLogger::begin() {
 
 void DataLogger::logWaveformData(const String &data) {
     logData(waveformFile, "waveform", data);
-    fileServer.sendDataUpdate(data, "", "");
+    fileServer->sendDataUpdate(data, "", "");
 }
 
 void DataLogger::logBreathData(const String &data) {
     logData(breathFile, "breath", data);
-    fileServer.sendDataUpdate("", data, "");
+    fileServer->sendDataUpdate("", data, "");
 }
 
 void DataLogger::logSettingsData(const String &data) {
     logData(settingsFile, "settings", data);
-    fileServer.sendDataUpdate("", "", data);
+    fileServer->sendDataUpdate("", "", data);
 }
 
 void DataLogger::updateFileNames() {

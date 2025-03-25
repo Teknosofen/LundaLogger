@@ -2,6 +2,7 @@
 #define SERVOCIE_DATA_HPP
 
 #include <Arduino.h>
+#include "main.hpp"
 
 class ServoCIEData {
 public:

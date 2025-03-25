@@ -1,7 +1,7 @@
 #ifndef WIFIMANAGER_HPP
 #define WIFIMANAGER_HPP
 
-#include <WiFi.h>
+// #include <WiFi.h>
 #include "main.hpp"
 
 class MyWiFiHandler {

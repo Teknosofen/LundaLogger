@@ -8,12 +8,12 @@
 #include <WiFi.h>
 #include <WebServer.h>
 #include <WebSocketsServer.h>
+#include "rm67162.h"
+#include <TFT_eSPI.h>
+#include "MyWiFiHandler.hpp"
 #include "FileServer.hpp"
 #include "DataLogger.hpp"
-#include "MyWiFiHandler.hpp"
-#include "ServoCIEData.hpp"
-#include <TFT_eSPI.h>
-#include "rm67162.h"
+
 #include "DisplayManager.hpp"
 #include "AnalogClock.hpp"
 
