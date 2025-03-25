@@ -7,7 +7,7 @@
 
 class DataLogger {
 public:
-    DataLogger(int csPin, FileServer &fileServer);
+    DataLogger(int csPin);
     void begin();
     void logWaveformData(const String &data);
     void logBreathData(const String &data);
@@ -20,7 +20,6 @@ private:
     File waveformFile;
     File breathFile;
     File settingsFile;
-    FileServer &fileServer;
 
     void updateFileNames();
     void logData(File &file, const String &dataType, const String &data);
