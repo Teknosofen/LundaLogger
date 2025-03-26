@@ -28,6 +28,8 @@ void FileServer::begin() {
 void FileServer::handleClient() {
     server.handleClient();
     webSocket.loop();
+}
+
 void FileServer::sendDataUpdate(const String &waveformData, const String &breathData, const String &settingsData) {
     this->waveformData = waveformData;
     this->breathData = breathData;
